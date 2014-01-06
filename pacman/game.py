@@ -92,11 +92,11 @@ class Game(object):
             if delta[0] > 0 and sprite.x + SPRITE_WIDTH >= x_t + 4:  # Right
                 collision = True
             elif delta[0] < 0 and sprite.x - 1 < x1_t - 4:  # Left
-                    collision = True
+                collision = True
             elif delta[1] > 0 and sprite.y + SPRITE_HEIGHT - 4 >= y_t:  # Down
-                    collision = True
+                collision = True
             elif delta[1] < 0 and sprite.y + 4 <= y1_t:  # Up
-                    collision = True
+                collision = True
 
         aligned = False
         if delta[0] != 0:  # left/right align y
