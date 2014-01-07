@@ -2,7 +2,6 @@ __author__ = 'Lars Djerf <lars.djerf@gmail.com'
 
 
 class Maze(object):
-
     MAZE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 23, 24, 9, 9, 9, 9, 9, 9, 9, 9,
@@ -79,6 +78,7 @@ class Maze(object):
 
         x, y = key
         if (x < 0 or x >= self.width or
+                    y < 0 or
                     y >= self.height):
             raise IndexError("Illegal tile coordinates: (%d, %d)." % (x, y))
         return self.maze.get(key, 0)
@@ -94,5 +94,5 @@ class Maze(object):
         x, y = key
         if (x < 0 or x >= self.width or
                     y < 0 or y >= self.height):
-            raise IndexError("Illegal tile coordinates.")
+            raise IndexError("Illegal tile coordinates: (%d, %d)." % (x, y))
         self.maze[key] = value
