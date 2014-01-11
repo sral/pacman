@@ -2,15 +2,16 @@ __author__ = 'Lars Djerf <lars.djerf@gmail.com'
 
 MAX_FRAME = 8  # number of frames in animation
 
+
 class PacMan(object):
-    def __init__(self, x, y, tiles):
+    def __init__(self, x, y, sprites):
         """Initialize instance."""
 
         self.x = x
         self.y = y
         self.delta = (0, 0)
         self.frame = 0
-        self.tiles = tiles
+        self.tiles = sprites
 
 
     def move(self):
