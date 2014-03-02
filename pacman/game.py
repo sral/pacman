@@ -46,6 +46,10 @@ class Game(object):
         Returns tile coordinate.
         """
 
+        # This is weird, no?
+        # Should be:
+        # return x / TILE_WIDTH, y / TILE_HEIGHT
+
         x1 = (x + TILE_WIDTH) / TILE_WIDTH
         y1 = (y + TILE_HEIGHT) / TILE_HEIGHT
 
@@ -63,7 +67,20 @@ class Game(object):
 
         return (coordinate + 4) % 8 == 0
 
+    def get_sprite_bounding_box(self, sprite):
+        """Returns sprite bounding box.
+
+        Keyword argument(s):
+        sprite -- The sprite
+        """
+
+        return (sprite.x, sprite.y, sprite.x + SPRITE_WIDTH,
+                sprite.y + SPRITE_HEIGHT)
+
+
     def setup(self):
+        """Setup game."""
+
         pygame.init()
         pygame.display.set_caption("pacman")
         self.maze_tiles = Tileset("data/tiles.gif", TILE_WIDTH, TILE_HEIGHT)
@@ -92,22 +109,20 @@ class Game(object):
         Returns True if the move is collision, False otherwise.
         """
 
-        if delta == (0, 0):
-            return True  # We already checked current position
-
         x, y = self.screen_to_tile(sprite.x + delta[0], sprite.y + delta[1])
         next_tile = maze[(x + delta[0], y + delta[1])]
 
         collision = False
         if next_tile > 3:
-            x_t, y_t, x1_t, y1_t = self.tile_to_screen(x + delta[0], y + delta[1])
-            if delta[0] > 0 and sprite.x + SPRITE_WIDTH >= x_t + 4:  # Right
-                collision = True
-            elif delta[0] < 0 and sprite.x - 1 < x1_t - 4:  # Left
-                collision = True
-            elif delta[1] > 0 and sprite.y + SPRITE_HEIGHT - 4 >= y_t:  # Down
-                collision = True
-            elif delta[1] < 0 and sprite.y + 4 <= y1_t:  # Up
+             x0, y0, x1, y1 = self.tile_to_screen(x, y)
+             x2, y2, x3, y3 = self.get_sprite_bounding_box(sprite)
+             if delta[0] > 0 and x3 >= x1 + 4:  # Right
+                 collision = True
+             elif delta[0] < 0 and x2 - 1 < x0 - 4:  # Left
+                 collision = True
+             elif delta[1] > 0 and y3 - 4 >= y1:  # Down
+                 collision = True
+             elif delta[1] < 0 and y2 + 4 <= y0:  # Up
                 collision = True
 
         aligned = False
