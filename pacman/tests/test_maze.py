@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from pacman.maze import Maze
 
 __author__ = 'Lars Djerf <lars.djerf@gmail.com'
@@ -69,5 +68,3 @@ class TestMaze(TestCase):
         for coordinates in illegal_values:
             with self.assertRaises(IndexError):
                 maze[coordinates] = 1
-
-

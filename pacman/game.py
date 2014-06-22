@@ -34,7 +34,7 @@ class Game(object):
         x *= TILE_WIDTH
         y *= TILE_HEIGHT
 
-        return x, y, x + TILE_WIDTH, y + TILE_HEIGHT
+        return x, y, x + TILE_WIDTH - 1, y + TILE_HEIGHT - 1
 
     @staticmethod
     def screen_to_tile(x, y):
@@ -50,10 +50,7 @@ class Game(object):
         # Should be:
         # return x / TILE_WIDTH, y / TILE_HEIGHT
 
-        x1 = (x + TILE_WIDTH) / TILE_WIDTH
-        y1 = (y + TILE_HEIGHT) / TILE_HEIGHT
-
-        return x1, y1
+        return (x / TILE_WIDTH) + 1, (y / TILE_HEIGHT) + 1
 
     @staticmethod
     def is_aligned(coordinate):
@@ -74,8 +71,8 @@ class Game(object):
         sprite -- The sprite
         """
 
-        return (sprite.x, sprite.y, sprite.x + SPRITE_WIDTH,
-                sprite.y + SPRITE_HEIGHT)
+        return (sprite.x, sprite.y, sprite.x + SPRITE_WIDTH - 1,
+                sprite.y + SPRITE_HEIGHT - 1)
 
 
     def setup(self):
@@ -84,7 +81,8 @@ class Game(object):
         pygame.init()
         pygame.display.set_caption("pacman")
         self.maze_tiles = Tileset("data/tiles.gif", TILE_WIDTH, TILE_HEIGHT)
-        self.pacman_tiles = Tileset("data/pacman.gif", SPRITE_WIDTH, SPRITE_HEIGHT)
+        self.pacman_tiles = Tileset("data/pacman.gif", SPRITE_WIDTH,
+                                    SPRITE_HEIGHT)
 
     def write_message(self, x, y, message):
         """Write message.
@@ -110,25 +108,25 @@ class Game(object):
         """
 
         x, y = self.screen_to_tile(sprite.x + delta[0], sprite.y + delta[1])
-        next_tile = maze[(x + delta[0], y + delta[1])]
-
+        next_tile_type = maze[(x + delta[0], y + delta[1])]
         collision = False
-        if next_tile > 3:
-             x0, y0, x1, y1 = self.tile_to_screen(x, y)
-             x2, y2, x3, y3 = self.get_sprite_bounding_box(sprite)
-             if delta[0] > 0 and x3 >= x1 + 4:  # Right
-                 collision = True
-             elif delta[0] < 0 and x2 - 1 < x0 - 4:  # Left
-                 collision = True
-             elif delta[1] > 0 and y3 - 4 >= y1:  # Down
-                 collision = True
-             elif delta[1] < 0 and y2 + 4 <= y0:  # Up
+
+        if next_tile_type > 3:  # > 3 is wall type
+            x0, y0, x1, y1 = self.tile_to_screen(x, y)
+            x2, y2, x3, y3 = self.get_sprite_bounding_box(sprite)
+            if delta[0] > 0 and x3 >= x1 + 4:  # Right
+                collision = True
+            elif delta[0] < 0 and x2 - 1 < x0 - 4:  # Left
+                collision = True
+            elif delta[1] > 0 and y3 - 4 >= y1:  # Down
+                collision = True
+            elif delta[1] < 0 and y2 + 4 <= y0:  # Up
                 collision = True
 
         aligned = False
         if delta[0] != 0:  # left/right align y
             aligned = self.is_aligned(sprite.y)
-        elif delta[1] != 0: # up/down align x
+        elif delta[1] != 0:  # up/down align x
             aligned = self.is_aligned(sprite.x)
 
         return aligned and not collision
@@ -140,7 +138,7 @@ class Game(object):
 
         score = 0
         high_score = 0
-        maze = Maze(self.maze_tiles)
+        maze = Maze(self.maze_tiles, HORIZONTAL_TILES, VERTICAL_TILES)
         maze.load_level(maze.MAZE)
         pac = PacMan(104, 204, self.pacman_tiles)
         delta = (0, 0)
@@ -164,7 +162,7 @@ class Game(object):
 
             x, y = self.screen_to_tile(pac.x, pac.y)
             if maze[(x, y)] > 0:
-                score += 10  # Add scoring
+                score += 10
                 maze[(x, y)] = 0
                 if score > high_score:
                     high_score = score
@@ -175,7 +173,6 @@ class Game(object):
                 pac.delta = (0, 0)
 
             pac.move()
-
             maze.draw()
             pac.draw()
             self.write_message(3, 0, "1UP")

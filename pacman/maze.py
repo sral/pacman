@@ -35,14 +35,14 @@ class Maze(object):
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-    def __init__(self, tileset):
+    def __init__(self, tileset, width, height):
         """Initialize instance.
 
         Keyword argument(s):
         tileset -- Tileset instance
         """
-        self.width = 28
-        self.height = 36
+        self.width = width
+        self.height = height
         self.tiles = tileset
         self.maze = {}  # Matrix
 
